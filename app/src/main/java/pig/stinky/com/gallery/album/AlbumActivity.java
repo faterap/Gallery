@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import pig.stinky.com.gallery.AlbumHelper;
+import pig.stinky.com.gallery.db.AlbumDao;
 import pig.stinky.com.gallery.BaseAdapter;
 import pig.stinky.com.gallery.LoadTask;
 import pig.stinky.com.gallery.R;
@@ -74,7 +74,7 @@ public class AlbumActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO: 2018/12/10 do it in thread
-                        AlbumHelper.createAlbum(new Album(et.getText().toString()));
+                        AlbumDao.createAlbum(new Album(et.getText().toString()));
 
                         refreshAlbum();
                     }
@@ -93,7 +93,7 @@ public class AlbumActivity extends AppCompatActivity {
 
         @Override
         protected List<Album> doInBackground() {
-            return AlbumHelper.loadAlbum();
+            return AlbumDao.loadAlbum();
         }
 
         @Override

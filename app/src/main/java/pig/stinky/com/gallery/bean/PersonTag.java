@@ -5,19 +5,25 @@ import java.util.Set;
 
 public class PersonTag {
 
-    private String mName;
-    private Set<Photo> mPhotos = new HashSet<>();
+    private String mValue;
 
-    public PersonTag(String name) {
-        mName = name;
+    // TODO: 10/12/18 1 image --- 1 path?
+    private String mPhotoPath;
+
+    public PersonTag(String value, String path) {
+        mValue = value;
+        mPhotoPath = path;
     }
 
-    public void add(Photo photo) {
-        mPhotos.add(photo);
+    public String getValue() {
+        return mValue;
     }
 
-    public void remove(Photo photo) {
-        mPhotos.remove(photo);
+    public String getPhotoPath() {
+        return mPhotoPath;
     }
 
+    public void setPhotoPath(String path) {
+        this.mPhotoPath = path;
+    }
 }

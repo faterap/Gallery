@@ -3,6 +3,7 @@ package pig.stinky.com.gallery;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -28,10 +29,11 @@ public abstract class LoadTask<T> extends AsyncTask<Void, Void, List<T>> {
 
     @Override
     protected void onPostExecute(final List<T> data) {
+        final Context ctx = mContext.get();
+
         mAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
-                Context ctx = mContext.get();
                 if (ctx != null) {
                     itemClick(data, position);
                 }
