@@ -86,6 +86,10 @@ public class PersonTagDao {
                 db.endTransaction();
                 DatabaseManager.getInstance().closeDatabase();
             }
+
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
         return ret;
@@ -116,6 +120,10 @@ public class PersonTagDao {
             if (db != null) {
                 db.endTransaction();
                 DatabaseManager.getInstance().closeDatabase();
+            }
+
+            if (cursor != null) {
+                cursor.close();
             }
         }
 

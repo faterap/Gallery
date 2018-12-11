@@ -81,6 +81,9 @@ public class AlbumActivity extends AppCompatActivity {
                 });
                 dialog.show();
                 return true;
+            case R.id.search_album:
+                // TODO: 11/12/18 add search activity
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

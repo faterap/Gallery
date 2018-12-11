@@ -31,12 +31,9 @@ public abstract class LoadTask<T> extends AsyncTask<Void, Void, List<T>> {
     protected void onPostExecute(final List<T> data) {
         final Context ctx = mContext.get();
 
-        mAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(View view, int position) {
-                if (ctx != null) {
-                    itemClick(data, position);
-                }
+        mAdapter.setOnItemClickListener((view, position) -> {
+            if (ctx != null) {
+                itemClick(data, position);
             }
         });
         mAdapter.setData(data);

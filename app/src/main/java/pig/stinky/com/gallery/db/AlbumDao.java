@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import pig.stinky.com.gallery.bean.Album;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,6 +77,10 @@ public class AlbumDao {
             if (db != null) {
                 db.endTransaction();
                 DatabaseManager.getInstance().closeDatabase();
+            }
+
+            if (cursor != null) {
+                cursor.close();
             }
         }
         return ret;
