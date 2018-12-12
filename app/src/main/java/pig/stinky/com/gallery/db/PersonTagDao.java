@@ -6,11 +6,9 @@ import android.database.sqlite.SQLiteException;
 import pig.stinky.com.gallery.bean.PersonTag;
 import pig.stinky.com.gallery.bean.Photo;
 
-import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PersonTagDao {
 
@@ -58,8 +56,8 @@ public class PersonTagDao {
         runRawQuery(Collections.singletonList(sql));
     }
 
-    public static Set<PersonTag> getPhotoTags(Photo photo) {
-        Set<PersonTag> ret = new HashSet<>();
+    public static List<PersonTag> getPhotoTags(Photo photo) {
+        List<PersonTag> ret = new ArrayList<>();
 
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -95,8 +93,8 @@ public class PersonTagDao {
         return ret;
     }
 
-    public static Set<PersonTag> getAllTags() {
-        Set<PersonTag> ret = new HashSet<>();
+    public static List<PersonTag> getAllTags() {
+        List<PersonTag> ret = new ArrayList<>();
 
         SQLiteDatabase db = null;
         Cursor cursor = null;

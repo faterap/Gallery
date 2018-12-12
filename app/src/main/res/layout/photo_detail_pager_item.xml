@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+            android:layout_centerInParent="true"
+            android:id="@+id/iv_photo"
+            android:scaleType="fitXY"
+            android:layout_width="300dp"
+            android:layout_height="300dp"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_person_tags"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_location_tags"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -2,6 +2,8 @@ package pig.stinky.com.gallery;
 
 import android.app.Application;
 import android.content.Context;
+import pig.stinky.com.gallery.db.GalleryDatabase;
+import pig.stinky.com.gallery.db.DatabaseManager;
 
 public class GalleryApplication extends Application {
 
@@ -15,5 +17,7 @@ public class GalleryApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+
+        DatabaseManager.initializeInstance(new GalleryDatabase(this));
     }
 }

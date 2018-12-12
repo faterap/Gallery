@@ -20,7 +20,7 @@ public class AlbumAdapter extends BaseAdapter<Album> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View root= LayoutInflater.from(mContext).inflate(R.layout.album_item_view, parent, false);
+        View root = LayoutInflater.from(mContext).inflate(R.layout.album_item, parent, false);
         return new AlbumViewHolder(root);
     }
 

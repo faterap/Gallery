@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="pig.stinky.com.gallery">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -9,20 +12,31 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".album.AlbumActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
                 android:name=".photo.PhotoActivity"
                 android:label="@string/title_activity_photo"
-                android:theme="@style/AppTheme.NoActionBar">
+                android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".search.SearchActivity">
-        </activity>
+
+        <activity android:name=".detail.PhotoDetailActivity"/>
+
+        <activity android:name=".basic.move.MovePhotoActivity"></activity>
+
+        <activity android:name=".basic.deletetag.DeleteLocationTagActivity"/>
+
+        <activity android:name=".basic.deletetag.DeletePersonTagActivity"/>
+
+        <activity android:name=".search.SearchActivity"/>
+
     </application>
 
 </manifest>

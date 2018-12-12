@@ -4,12 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class AlbumDatabase extends SQLiteOpenHelper {
+public class GalleryDatabase extends SQLiteOpenHelper {
     // Database info
-    public static final String DB_NAME = "file_manager_db";
+    public static final String DB_NAME = "gallery_db";
     public static final int DB_VERSION = 2;
 
-    public AlbumDatabase(Context context) {
+    public GalleryDatabase(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

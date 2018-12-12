@@ -21,7 +21,7 @@ public class PhotoAdapter extends BaseAdapter<Photo> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View root= LayoutInflater.from(mContext).inflate(R.layout.photo_item_view, parent, false);
+        View root = LayoutInflater.from(mContext).inflate(R.layout.photo_item, parent, false);
         return new PhotoViewHolder(root);
     }
 
@@ -36,7 +36,7 @@ public class PhotoAdapter extends BaseAdapter<Photo> {
             vh.mPhotoThumbnail.setImageBitmap(photo.getBitmap());
         } else {
             // TODO: 2018/12/10 default image
-            vh.mPhotoThumbnail.setImageDrawable();
+            vh.mPhotoThumbnail.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_placeholder));
         }
     }
 

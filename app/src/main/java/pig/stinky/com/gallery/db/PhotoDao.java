@@ -10,7 +10,9 @@ import pig.stinky.com.gallery.bean.PersonTag;
 import pig.stinky.com.gallery.bean.Photo;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PhotoDao {
 
@@ -270,7 +272,7 @@ public class PhotoDao {
 
             personCursor = db.rawQuery(personTagSql, null);
 
-            Set<PersonTag> personTags = new HashSet<>();
+            List<PersonTag> personTags = new ArrayList<>();
             while (personCursor.moveToNext()) {
                 PersonTag personTag = new PersonTag(personCursor.getString(1), photoPath);
                 personTags.add(personTag);
@@ -283,7 +285,7 @@ public class PhotoDao {
 
             locationCursor = db.rawQuery(locationTagSql, null);
 
-            Set<LocationTag> locationTags = new HashSet<>();
+            List<LocationTag> locationTags = new ArrayList<>();
             while (locationCursor.moveToNext()) {
                 LocationTag locationTag = new LocationTag(locationCursor.getString(1), photoPath);
                 locationTags.add(locationTag);

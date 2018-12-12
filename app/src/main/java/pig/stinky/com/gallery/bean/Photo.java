@@ -2,76 +2,80 @@ package pig.stinky.com.gallery.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Photo implements Serializable {
+public class Photo implements Parcelable {
 
     private File mImage;
     private String mAlbumName;
 
-    private Set<PersonTag> mPersonTags = new HashSet<>();
-    private Set<LocationTag> mLocationTags = new HashSet<>();
+    // TODO: 12/12/18 unused
+    private List<PersonTag> mPersonTags = new ArrayList<>();
+    private List<LocationTag> mLocationTags = new ArrayList<>();
 
     public Photo(File image, String albumName) {
         mImage = image;
         mAlbumName = albumName;
     }
 
-    public Set<PersonTag> getPersonTags() {
-        return new HashSet<>(mPersonTags);
+    protected Photo(Parcel in) {
+        mAlbumName = in.readString();
     }
-    public void setPersonTag(Set<PersonTag> personTags) {
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
+
+    public List<PersonTag> getPersonTags() {
+        return new ArrayList<>(mPersonTags);
+    }
+
+    public void setPersonTag(List<PersonTag> personTags) {
         mPersonTags.clear();
         mPersonTags.addAll(personTags);
     }
 
-    public Set<LocationTag> getLocationTags() {
-        return new HashSet<>(mLocationTags);
+    public List<LocationTag> getLocationTags() {
+        return new ArrayList<>(mLocationTags);
     }
-    public void setLocationTags(Set<LocationTag> locationTags) {
+
+    public void setLocationTags(List<LocationTag> locationTags) {
         mLocationTags.clear();
         mLocationTags.addAll(locationTags);
     }
+
     public void addPersonTag(PersonTag personTag) {
         mPersonTags.add(personTag);
         personTag.setPhotoPath(getFullPath());
     }
+
     public void removePersonTag(PersonTag personTag) {
         mPersonTags.remove(personTag);
         personTag.setPhotoPath("");
     }
+
     public void addLocationTag(LocationTag locationTag) {
         mLocationTags.add(locationTag);
         locationTag.setPhotoPath(getFullPath());
     }
+
     public void removeLocationTag(LocationTag locationTag) {
         mLocationTags.remove(locationTag);
         locationTag.setPhotoPath(getFullPath());
     }
-
-//    public void addPersonTag(PersonTag personTag) {
-//        // TODO: 10/12/18 better implementation
-//        personTag.setPhotoPath(getFullPath());
-//    }
-//
-//    public void removePersonTag(PersonTag personTag) {
-//        // TODO: 10/12/18 better implementation
-//        personTag.setPhotoPath("");
-//    }
-//
-//    public void addLocationTag(LocationTag locationTag) {
-//        // TODO: 10/12/18 better implementation
-//        locationTag.setPhotoPath(getFullPath());
-//    }
-//
-//    public void removeLocationTag(LocationTag locationTag) {
-//        // TODO: 10/12/18 better implementation
-//        locationTag.setPhotoPath("");
-//    }
 
     public boolean exist() {
         return mImage != null && mImage.exists();
@@ -95,5 +99,15 @@ public class Photo implements Serializable {
 
     public String getAlbumName() {
         return mAlbumName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mAlbumName);
     }
 }

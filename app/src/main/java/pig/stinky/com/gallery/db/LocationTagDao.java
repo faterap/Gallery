@@ -6,10 +6,9 @@ import android.database.sqlite.SQLiteException;
 import pig.stinky.com.gallery.bean.LocationTag;
 import pig.stinky.com.gallery.bean.Photo;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class LocationTagDao {
 
@@ -57,10 +56,10 @@ public class LocationTagDao {
         runRawQuery(Collections.singletonList(sql));
     }
 
-    public Set<LocationTag> getPhotoLags(Photo photo) {
+    public static List<LocationTag> getPhotoLags(Photo photo) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
-        Set<LocationTag> ret = new HashSet<>();
+        List<LocationTag> ret = new ArrayList<>();
 
         try {
             db = DatabaseManager.getInstance().openDatabase();
@@ -93,10 +92,10 @@ public class LocationTagDao {
         return ret;
     }
 
-    public Set<LocationTag> getAllTags(Photo photo) {
+    public static List<LocationTag> getAllTags(Photo photo) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
-        Set<LocationTag> ret = new HashSet<>();
+        List<LocationTag> ret = new ArrayList<>();
 
         try {
             db = DatabaseManager.getInstance().openDatabase();

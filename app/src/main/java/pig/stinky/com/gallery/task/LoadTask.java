@@ -1,9 +1,10 @@
-package pig.stinky.com.gallery;
+package pig.stinky.com.gallery.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import pig.stinky.com.gallery.BaseAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -25,7 +26,9 @@ public abstract class LoadTask<T> extends AsyncTask<Void, Void, List<T>> {
 
     protected abstract List<T> doInBackground();
 
-    protected abstract void itemClick(List<T> data, int position);
+    protected void itemClick(List<T> data, int position) {
+
+    }
 
     @Override
     protected void onPostExecute(final List<T> data) {
