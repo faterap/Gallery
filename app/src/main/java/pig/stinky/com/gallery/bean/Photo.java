@@ -24,6 +24,7 @@ public class Photo implements Parcelable {
     }
 
     protected Photo(Parcel in) {
+        mImage = (File) in.readSerializable();
         mAlbumName = in.readString();
     }
 
@@ -38,6 +39,17 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(mImage);
+        dest.writeString(mAlbumName);
+    }
 
     public List<PersonTag> getPersonTags() {
         return new ArrayList<>(mPersonTags);
@@ -99,15 +111,5 @@ public class Photo implements Parcelable {
 
     public String getAlbumName() {
         return mAlbumName;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mAlbumName);
     }
 }

@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
@@ -14,7 +15,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
     }
 
     protected OnItemClickListener mOnItemClickListener;
-    protected List<T> mData;
+    protected List<T> mData = new ArrayList<>();
     protected Context mContext;
 
     public BaseAdapter(Context context) {
