@@ -11,7 +11,9 @@ import java.util.List;
 
 public class AlbumDao {
 
-    private static void runRawQuery(List<String> sqls) {
+    public static final int INDEX_ALBUM_NAME = 0;
+
+    private static void runRawSql(List<String> sqls) {
         SQLiteDatabase db = null;
 
         try {
@@ -19,7 +21,7 @@ public class AlbumDao {
             db.beginTransaction();
 
             for (String sql : sqls) {
-                db.rawQuery(sql, null);
+                db.execSQL(sql);
             }
 
             db.setTransactionSuccessful();
@@ -33,24 +35,24 @@ public class AlbumDao {
         }
     }
 
-    public static void createAlbum(Album album) {
-        String sql = "INSERT INTO `photos`.`album` (`albumname`)  VALUES ('"
+    public static void addAlbum(Album album) {
+        String sql = "INSERT INTO `album` (`albumname`) VALUES ('"
                 + album.getAlbumName()
                 + "')";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static void deleteAlbum(Album album) {
-        String sql = "DELETE FROM `photos`.`album` WHERE (`albumname`) ='"
-                + album.getAlbumName();
-        runRawQuery(Collections.singletonList(sql));
+        String sql = "DELETE FROM `album` WHERE (`albumname`) ='"
+                + album.getAlbumName() + "'";
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static void renameAlbum(Album album, String name) {
-        String sql = "UPDATE `photos`.`album` SET `albumname` = '"
+        String sql = "UPDATE `album` SET `albumname` = '"
                 + name + "' WHERE `albumname` = '"
-                + album.getAlbumName();
-        runRawQuery(Collections.singletonList(sql));
+                + album.getAlbumName() + "'";
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static List<Album> loadAlbum() {
@@ -63,10 +65,10 @@ public class AlbumDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`album`";
+            String sql = "SELECT * FROM `album`";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Album album = new Album(cursor.getString(1));
+                Album album = new Album(cursor.getString(INDEX_ALBUM_NAME));
                 ret.add(album);
             }
 

@@ -12,11 +12,14 @@ import java.util.List;
 
 public class LocationTagDao {
 
+    public static final int INDEX_TAG_PHOTO_PATH = 0;
+    public static final int INDEX_TAG_NAME = 1;
+
     private LocationTagDao() {
 
     }
 
-    private static void runRawQuery(List<String> sqls) {
+    private static void runRawSql(List<String> sqls) {
         SQLiteDatabase db = null;
 
         try {
@@ -24,7 +27,7 @@ public class LocationTagDao {
             db.beginTransaction();
 
             for (String sql : sqls) {
-                db.rawQuery(sql, null);
+                db.execSQL(sql);
             }
 
             db.setTransactionSuccessful();
@@ -39,21 +42,21 @@ public class LocationTagDao {
     }
 
     public static void addTag(LocationTag tag) {
-        String sql = "INSERT INTO `photos`.`locationtag` (`photoname`,`value`)  VALUES ('"
+        String sql = "INSERT INTO `locationtag` (`photoname`,`value`) VALUES ('"
                 + tag.getPhotoPath()
                 + "','"
                 + tag.getValue()
                 + "')";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static void deleteTag(LocationTag tag) {
-        String sql = "DELETE FROM `photos`.`locationtag` WHERE `photoname` ='"
+        String sql = "DELETE FROM `locationtag` WHERE `photoname` ='"
                 + tag.getPhotoPath()
                 + "' and `value` = '"
                 + tag.getValue()
                 + "'";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static List<LocationTag> getPhotoLags(Photo photo) {
@@ -65,13 +68,13 @@ public class LocationTagDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`locationtag` WHERE `photoname` = '"
+            String sql = "SELECT * FROM `locationtag` WHERE `photoname` = '"
                     + photo.getFullPath()
                     + "'";
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                LocationTag tag = new LocationTag(cursor.getString(2), cursor.getString(1));
+                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
                 ret.add(tag);
             }
 
@@ -92,7 +95,7 @@ public class LocationTagDao {
         return ret;
     }
 
-    public static List<LocationTag> getAllTags(Photo photo) {
+    public static List<LocationTag> getAllTags() {
         SQLiteDatabase db = null;
         Cursor cursor = null;
         List<LocationTag> ret = new ArrayList<>();
@@ -101,11 +104,11 @@ public class LocationTagDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`locationtag`";
+            String sql = "SELECT * FROM `locationtag`";
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                LocationTag tag = new LocationTag(cursor.getString(2), cursor.getString(1));
+                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
                 ret.add(tag);
             }
 

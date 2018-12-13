@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+import pig.stinky.com.gallery.PermissionActivity;
 import pig.stinky.com.gallery.R;
 import pig.stinky.com.gallery.basic.deletetag.DeleteLocationTagActivity;
 import pig.stinky.com.gallery.basic.deletetag.DeletePersonTagActivity;
@@ -21,18 +21,14 @@ import pig.stinky.com.gallery.bean.Photo;
 import pig.stinky.com.gallery.db.LocationTagDao;
 import pig.stinky.com.gallery.db.PersonTagDao;
 import pig.stinky.com.gallery.db.PhotoDao;
-import pig.stinky.com.gallery.task.LocationTagTask;
-import pig.stinky.com.gallery.task.PersonTagTask;
 import pig.stinky.com.gallery.utils.DialogHelper;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import static pig.stinky.com.gallery.photo.PhotoActivity.EXTRA_OPEN_PHOTO;
 import static pig.stinky.com.gallery.photo.PhotoActivity.EXTRA_OPEN_PHOTO_INDEX;
 
-public class PhotoDetailActivity extends AppCompatActivity {
+public class PhotoDetailActivity extends PermissionActivity {
 
     private ViewPager mPager;
 
@@ -44,7 +40,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_detail);
 
-        mPhotos= getIntent().getParcelableArrayListExtra(EXTRA_OPEN_PHOTO);
+        mPhotos = getIntent().getParcelableArrayListExtra(EXTRA_OPEN_PHOTO);
         mCurrentIndex = getIntent().getIntExtra(EXTRA_OPEN_PHOTO_INDEX, -1);
 
         mPager = findViewById(R.id.pager);
@@ -71,8 +67,13 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.delete_photo:
-                // TODO: 12/12/18 do it in worker thread
-                PhotoDao.deletePhoto(photo);
+                dialog = DialogHelper.buildDeleteDialog(this, "Delete this photo?", (dialog1, which) -> {
+                    PhotoDao.deletePhoto(photo);
+
+                    // exit activity after album deleted
+                    finish();
+                });
+                dialog.show();
                 return true;
             case R.id.move_photo:
                 intent = new Intent(this, MovePhotoActivity.class);
@@ -80,15 +81,11 @@ public class PhotoDetailActivity extends AppCompatActivity {
                 startActivityForResult(intent, MovePhotoActivity.MOVE_PHOTO_REQUEST_CODE);
                 return true;
             case R.id.add_person_tag:
-                dialog = DialogHelper.buildCustomViewDialog(this, "Add person tag", root, (dialog1, which) -> {
-                    PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo.getFullPath()));
-                });
+                dialog = DialogHelper.buildCustomViewDialog(this, "Add person tag", root, (dialog1, which) -> PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo.getFullPath())));
                 dialog.show();
                 return true;
             case R.id.add_location_tag:
-                dialog = DialogHelper.buildCustomViewDialog(this, "Add location tag", root, (dialog1, which) -> {
-                    LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo.getFullPath()));
-                });
+                dialog = DialogHelper.buildCustomViewDialog(this, "Add location tag", root, (dialog1, which) -> LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo.getFullPath())));
                 dialog.show();
                 return true;
             case R.id.delete_person_tag:

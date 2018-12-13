@@ -6,7 +6,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Photo implements Parcelable {
@@ -15,8 +14,8 @@ public class Photo implements Parcelable {
     private String mAlbumName;
 
     // TODO: 12/12/18 unused
-    private List<PersonTag> mPersonTags = new ArrayList<>();
-    private List<LocationTag> mLocationTags = new ArrayList<>();
+//    private List<PersonTag> mPersonTags = new ArrayList<>();
+//    private List<LocationTag> mLocationTags = new ArrayList<>();
 
     public Photo(File image, String albumName) {
         mImage = image;
@@ -51,43 +50,51 @@ public class Photo implements Parcelable {
         dest.writeString(mAlbumName);
     }
 
-    public List<PersonTag> getPersonTags() {
-        return new ArrayList<>(mPersonTags);
-    }
+//    public List<PersonTag> getPersonTags() {
+//        return new ArrayList<>(mPersonTags);
+//    }
 
     public void setPersonTag(List<PersonTag> personTags) {
-        mPersonTags.clear();
-        mPersonTags.addAll(personTags);
+//        mPersonTags.clear();
+//        mPersonTags.addAll(personTags);
+
+        for (PersonTag tag : personTags) {
+            tag.setPhotoPath(getFullPath());
+        }
     }
 
-    public List<LocationTag> getLocationTags() {
-        return new ArrayList<>(mLocationTags);
-    }
+//    public List<LocationTag> getLocationTags() {
+//        return new ArrayList<>(mLocationTags);
+//    }
 
     public void setLocationTags(List<LocationTag> locationTags) {
-        mLocationTags.clear();
-        mLocationTags.addAll(locationTags);
+//        mLocationTags.clear();
+//        mLocationTags.addAll(locationTags);
+
+        for (LocationTag tag : locationTags) {
+            tag.setPhotoPath(getFullPath());
+        }
     }
 
-    public void addPersonTag(PersonTag personTag) {
-        mPersonTags.add(personTag);
-        personTag.setPhotoPath(getFullPath());
-    }
-
-    public void removePersonTag(PersonTag personTag) {
-        mPersonTags.remove(personTag);
-        personTag.setPhotoPath("");
-    }
-
-    public void addLocationTag(LocationTag locationTag) {
-        mLocationTags.add(locationTag);
-        locationTag.setPhotoPath(getFullPath());
-    }
-
-    public void removeLocationTag(LocationTag locationTag) {
-        mLocationTags.remove(locationTag);
-        locationTag.setPhotoPath(getFullPath());
-    }
+//    public void addPersonTag(PersonTag personTag) {
+//        mPersonTags.add(personTag);
+//        personTag.setPhotoPath(getFullPath());
+//    }
+//
+//    public void removePersonTag(PersonTag personTag) {
+//        mPersonTags.remove(personTag);
+//        personTag.setPhotoPath("");
+//    }
+//
+//    public void addLocationTag(LocationTag locationTag) {
+//        mLocationTags.add(locationTag);
+//        locationTag.setPhotoPath(getFullPath());
+//    }
+//
+//    public void removeLocationTag(LocationTag locationTag) {
+//        mLocationTags.remove(locationTag);
+//        locationTag.setPhotoPath(getFullPath());
+//    }
 
     public boolean exist() {
         return mImage != null && mImage.exists();
@@ -102,10 +109,11 @@ public class Photo implements Parcelable {
     }
 
     public Bitmap getBitmap() {
-        if (exist()) {
+        if (!exist()) {
             return null;
         }
 
+        // TODO: 13/12/18 set sample size
         return BitmapFactory.decodeFile(mImage.getAbsolutePath());
     }
 

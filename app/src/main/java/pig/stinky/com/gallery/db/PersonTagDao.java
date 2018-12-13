@@ -12,11 +12,14 @@ import java.util.List;
 
 public class PersonTagDao {
 
+    public static final int INDEX_TAG_PHOTO_PATH = 0;
+    public static final int INDEX_TAG_NAME = 1;
+
     private PersonTagDao() {
 
     }
 
-    private static void runRawQuery(List<String> sqls) {
+    private static void runRawSql(List<String> sqls) {
         SQLiteDatabase db = null;
 
         try {
@@ -24,7 +27,7 @@ public class PersonTagDao {
             db.beginTransaction();
 
             for (String sql : sqls) {
-                db.rawQuery(sql, null);
+                db.execSQL(sql);
             }
 
             db.setTransactionSuccessful();
@@ -39,21 +42,21 @@ public class PersonTagDao {
     }
 
     public static void addTag(PersonTag tag) {
-        String sql = "INSERT INTO `photos`.`persontag` (`photoid`,`value`)  VALUES ('"
+        String sql = "INSERT INTO `persontag` (`photoid`,`value`)  VALUES ('"
                 + tag.getPhotoPath()
                 + "','"
                 + tag.getValue()
                 + "')";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static void deleteTag(PersonTag tag) {
-        String sql = "DELETE FROM `photos`.`persontag` WHERE `photoid` ='"
+        String sql = "DELETE FROM `persontag` WHERE `photoid` ='"
                 + tag.getPhotoPath()
                 + "' and `value` = '"
                 + tag.getValue()
                 + "'";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static List<PersonTag> getPhotoTags(Photo photo) {
@@ -66,13 +69,13 @@ public class PersonTagDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`persontag` WHERE `photoid` = '"
+            String sql = "SELECT * FROM `persontag` WHERE `photoid` = '"
                     + photo.getFullPath()
                     + "'";
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                PersonTag tag = new PersonTag(cursor.getString(2), cursor.getString(1));
+                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
                 ret.add(tag);
             }
 
@@ -103,11 +106,11 @@ public class PersonTagDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`persontag`";
+            String sql = "SELECT * FROM `persontag`";
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                PersonTag tag = new PersonTag(cursor.getString(2), cursor.getString(1));
+                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
                 ret.add(tag);
             }
 

@@ -1,8 +1,5 @@
 package pig.stinky.com.gallery.bean;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class PersonTag {
 
     private String mValue;

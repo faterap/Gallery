@@ -20,7 +20,7 @@ public class LocationTagTask extends LoadTask<LocationTag> {
 
     @Override
     protected List<LocationTag> doInBackground() {
-        return LocationTagDao.getAllTags(mPhoto);
+        return LocationTagDao.getPhotoLags(mPhoto);
     }
 
 }

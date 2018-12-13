@@ -4,7 +4,6 @@ import android.os.Bundle;
 import pig.stinky.com.gallery.basic.RVActivity;
 import pig.stinky.com.gallery.bean.Photo;
 import pig.stinky.com.gallery.db.PersonTagDao;
-import pig.stinky.com.gallery.task.LocationTagTask;
 import pig.stinky.com.gallery.task.PersonTagTask;
 
 import java.lang.ref.WeakReference;
@@ -21,7 +20,7 @@ public class DeletePersonTagActivity extends RVActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPhoto = (Photo) getIntent().getSerializableExtra(EXTRA_DELETE_PERSON_TAG_PHOTO);
+        mPhoto = getIntent().getParcelableExtra(EXTRA_DELETE_PERSON_TAG_PHOTO);
 
         mAdapter = new DeletePersonTagAdapter(this);
         mAdapter.setOnPhotoDeleteListener(tag -> {

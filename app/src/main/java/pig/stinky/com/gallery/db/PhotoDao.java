@@ -16,11 +16,14 @@ import java.util.List;
 
 public class PhotoDao {
 
+    public static final int INDEX_IMAGE_PATH = 1;
+    public static final int INDEX_ALBUM_NAME = 0;
+
     private PhotoDao() {
 
     }
 
-    private static void runRawQuery(List<String> sqls) {
+    private static void runRawSql(List<String> sqls) {
         SQLiteDatabase db = null;
 
         try {
@@ -28,7 +31,7 @@ public class PhotoDao {
             db.beginTransaction();
 
             for (String sql : sqls) {
-                db.rawQuery(sql, null);
+                db.execSQL(sql);
             }
 
             db.setTransactionSuccessful();
@@ -52,12 +55,12 @@ public class PhotoDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`photo` WHERE `albumid` = '"
+            String sql = "SELECT * FROM `photo` WHERE `albumid` = '"
                     + album.getAlbumName()
                     + "'";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Photo photo = new Photo(new File(cursor.getString(2)), cursor.getString(1));
+                Photo photo = new Photo(new File(cursor.getString(INDEX_IMAGE_PATH)), cursor.getString(INDEX_ALBUM_NAME));
                 setPhotoTag(db, photo);
                 ret.add(photo);
             }
@@ -89,10 +92,10 @@ public class PhotoDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `photos`.`photo`;";
+            String sql = "SELECT * FROM `photo`";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Photo photo = new Photo(new File(cursor.getString(2)), cursor.getString(1));
+                Photo photo = new Photo(new File(cursor.getString(INDEX_IMAGE_PATH)), cursor.getString(INDEX_ALBUM_NAME));
                 setPhotoTag(db, photo);
                 ret.add(photo);
             }
@@ -115,13 +118,13 @@ public class PhotoDao {
     }
 
     public static void movePhoto(Photo photo, Album src, Album dst) {
-        String insertSql = "INSERT INTO `photos`.`photo` (`filepath`,`albumid`)  VALUES ('"
+        String insertSql = "INSERT INTO `photo` (`filepath`,`albumid`)  VALUES ('"
                 + photo.getFullPath()
                 + "','"
                 + dst.getAlbumName()
                 + "')";
 
-        String deleteSql = "DELETE FROM `photos`.`photo` WHERE `albumid` ='"
+        String deleteSql = "DELETE FROM `photo` WHERE `albumid` ='"
                 + src.getAlbumName()
                 + "' and `filepath` = '"
                 + photo.getFullPath()
@@ -129,25 +132,25 @@ public class PhotoDao {
         List<String> sql = new ArrayList<>();
         sql.add(insertSql);
         sql.add(deleteSql);
-        runRawQuery(sql);
+        runRawSql(sql);
     }
 
     public static void deletePhoto(Photo photo) {
-        String sql = "DELETE FROM `photos`.`photo` WHERE `albumid` ='"
+        String sql = "DELETE FROM `photo` WHERE `albumid` ='"
                 + photo.getAlbumName()
                 + "' and `filepath` = '"
                 + photo.getFullPath()
                 + "'";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static void addPhoto(Photo photo) {
-        String sql = "INSERT INTO `photos`.`photo` (`filepath`,`albumid`)  VALUES ('"
+        String sql = "INSERT INTO `photo` (`filepath`,`albumid`)  VALUES ('"
                 + photo.getFullPath()
                 + "','"
                 + photo.getAlbumName()
                 + "')";
-        runRawQuery(Collections.singletonList(sql));
+        runRawSql(Collections.singletonList(sql));
     }
 
     public static List<Photo> searchByPersonTag(String key) {
@@ -160,12 +163,12 @@ public class PhotoDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT p.albumid, t1.photoid FROM ( SELECT l.photoid FROM photos.persontag l WHERE value Like '"
+            String sql = "SELECT p.albumid, t1.photoid FROM ( SELECT l.photoid FROM persontag l WHERE value Like '%"
                     + key
-                    + "%')t1, photos.photo p WHERE p.filepath = t1.photoid GROUP BY t1.photoid";
+                    + "%')t1, photo p WHERE p.filepath = t1.photoid GROUP BY t1.photoid";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Photo photo = new Photo(new File(cursor.getString(2)), cursor.getString(1));
+                Photo photo = new Photo(new File(cursor.getString(INDEX_IMAGE_PATH)), cursor.getString(INDEX_ALBUM_NAME));
                 setPhotoTag(db, photo);
                 ret.add(photo);
             }
@@ -196,12 +199,12 @@ public class PhotoDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT p.albumid, t1.photoname FROM ( SELECT l.photoname FROM photos.locationtag l WHERE value Like '"
+            String sql = "SELECT p.albumid, t1.photoname FROM ( SELECT l.photoname FROM locationtag l WHERE value Like '%"
                     + key
-                    + "%')t1, photos.photo p WHERE p.filepath = t1.photoname GROUP BY t1.photoname";
+                    + "%')t1, photo p WHERE p.filepath = t1.photoname GROUP BY t1.photoname";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Photo photo = new Photo(new File(cursor.getString(2)), cursor.getString(1));
+                Photo photo = new Photo(new File(cursor.getString(INDEX_ALBUM_NAME)), cursor.getString(INDEX_IMAGE_PATH));
                 setPhotoTag(db, photo);
                 ret.add(photo);
             }
@@ -232,14 +235,14 @@ public class PhotoDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT photo.albumid, t1.photoid FROM (( SELECT p.photoid FROM photos.persontag p WHERE value Like '"
+            String sql = "SELECT photo.albumid, t1.photoid FROM (( SELECT p.photoid FROM persontag p WHERE value Like '%"
                     + personKey
-                    + "%') UNION ALL (SELECT l.photoname FROM photos.locationtag l WHERE value Like '"
+                    + "%') UNION ALL (SELECT l.photoname FROM locationtag l WHERE value Like '%"
                     + locationKey
-                    + "'))t1,photos.photo WHERE photo.filepath = t1.photoid GROUP BY t1.photoid";
+                    + "%'))t1, photo WHERE photo.filepath = t1.photoid GROUP BY t1.photoid";
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                Photo photo = new Photo(new File(cursor.getString(2)), cursor.getString(1));
+                Photo photo = new Photo(new File(cursor.getString(INDEX_IMAGE_PATH)), cursor.getString(INDEX_ALBUM_NAME));
                 setPhotoTag(db, photo);
                 ret.add(photo);
             }
@@ -266,7 +269,7 @@ public class PhotoDao {
         Cursor locationCursor = null;
 
         try {
-            String personTagSql = "SELECT `value` FROM `photos`.`persontag` WHERE `photoid` = '"
+            String personTagSql = "SELECT `value` FROM `persontag` WHERE `photoid` = '"
                     + photoPath
                     + "'";
 
@@ -274,12 +277,12 @@ public class PhotoDao {
 
             List<PersonTag> personTags = new ArrayList<>();
             while (personCursor.moveToNext()) {
-                PersonTag personTag = new PersonTag(personCursor.getString(1), photoPath);
+                PersonTag personTag = new PersonTag(personCursor.getString(0), photoPath);
                 personTags.add(personTag);
             }
             photo.setPersonTag(personTags);
 
-            String locationTagSql = "SELECT `value` FROM `photos`.`locationtag` WHERE `photoname` = '"
+            String locationTagSql = "SELECT `value` FROM `locationtag` WHERE `photoname` = '"
                     + photoPath
                     + "'";
 
@@ -287,7 +290,7 @@ public class PhotoDao {
 
             List<LocationTag> locationTags = new ArrayList<>();
             while (locationCursor.moveToNext()) {
-                LocationTag locationTag = new LocationTag(locationCursor.getString(1), photoPath);
+                LocationTag locationTag = new LocationTag(locationCursor.getString(0), photoPath);
                 locationTags.add(locationTag);
             }
             photo.setLocationTags(locationTags);

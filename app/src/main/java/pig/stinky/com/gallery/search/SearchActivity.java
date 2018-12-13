@@ -2,25 +2,27 @@ package pig.stinky.com.gallery.search;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import pig.stinky.com.gallery.BaseAdapter;
-import pig.stinky.com.gallery.task.LoadTask;
+import pig.stinky.com.gallery.PermissionActivity;
 import pig.stinky.com.gallery.R;
 import pig.stinky.com.gallery.bean.Photo;
 import pig.stinky.com.gallery.db.PhotoDao;
+import pig.stinky.com.gallery.task.LoadTask;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends PermissionActivity {
 
     private EditText mPersonEt;
     private EditText mLocationEt;
@@ -28,8 +30,8 @@ public class SearchActivity extends AppCompatActivity {
     private RadioGroup mGroup;
     private RecyclerView mRecyclerView;
 
-    // search parameters
-    private Filter mFilter;
+    // default selection
+    private Filter mFilter = Filter.PERSON;
     private SearchAdapter mAdapter;
 
     private enum Filter {
@@ -46,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
         mGroup = findViewById(R.id.radio_group);
         mRecyclerView = findViewById(R.id.recycler_view);
 
+        mGroup.check(R.id.rb_person_tag);
         mGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.rb_person_tag:
@@ -76,15 +79,43 @@ public class SearchActivity extends AppCompatActivity {
         return true;
     }
 
+    private void showToast() {
+        Toast.makeText(this, "Target field cannot be empty!", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String personTagTrim = mPersonEt.getText().toString().trim();
+        String locationTagTrim = mLocationEt.getText().toString().trim();
+
         switch (item.getItemId()) {
             case R.id.search:
-                startSearch(mPersonEt.getText().toString().trim(), mLocationEt.getText().toString().trim());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                switch (mGroup.getCheckedRadioButtonId()) {
+                    case R.id.rb_person_tag:
+                        if (TextUtils.isEmpty(personTagTrim)) {
+                            showToast();
+                            return true;
+                        }
+                        break;
+                    case R.id.rb_location_tag:
+                        if (TextUtils.isEmpty(locationTagTrim)) {
+                            showToast();
+                            return true;
+                        }
+                        break;
+                    case R.id.rb_both_tag:
+                        if (TextUtils.isEmpty(personTagTrim) || TextUtils.isEmpty(locationTagTrim)) {
+                            showToast();
+                            return true;
+                        }
+                        break;
+                    default:
+                        return super.onOptionsItemSelected(item);
+                }
         }
+
+        startSearch(mPersonEt.getText().toString().trim(), mLocationEt.getText().toString().trim());
+        return true;
     }
 
     private void startSearch(String personKey, String locationKey) {
@@ -128,10 +159,6 @@ public class SearchActivity extends AppCompatActivity {
                     break;
             }
             return ret;
-        }
-
-        @Override
-        protected void itemClick(List<Photo> data, int position) {
         }
     }
 }

@@ -11,13 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import pig.stinky.com.gallery.BaseAdapter;
 import pig.stinky.com.gallery.R;
 import pig.stinky.com.gallery.bean.Album;
+import pig.stinky.com.gallery.bean.Photo;
 
 public class MovePhotoAdapter extends BaseAdapter<Album> {
 
     private OnPhotoMovedListener mListener;
 
-    public MovePhotoAdapter(Context context) {
+    private Photo mPhoto;
+
+    public MovePhotoAdapter(Context context, Photo photo) {
         super(context);
+        mPhoto = photo;
     }
 
     public interface OnPhotoMovedListener {
@@ -38,12 +42,20 @@ public class MovePhotoAdapter extends BaseAdapter<Album> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MovePhotoViewHolder vh = (MovePhotoViewHolder) holder;
-        vh.mNameTv.setText(mData.get(position).getAlbumName());
-        vh.mMoveBtn.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onPhotoMoved(mData.get(position));
-            }
-        });
+        Album album = mData.get(position);
+
+        vh.mNameTv.setText(album.getAlbumName());
+
+        if (album.getAlbumName().equals(mPhoto.getAlbumName())) {
+            vh.mMoveBtn.setEnabled(false);
+        } else {
+            vh.mMoveBtn.setEnabled(true);
+            vh.mMoveBtn.setOnClickListener(v -> {
+                if (mListener != null) {
+                    mListener.onPhotoMoved(album);
+                }
+            });
+        }
     }
 
     static class MovePhotoViewHolder extends RecyclerView.ViewHolder {

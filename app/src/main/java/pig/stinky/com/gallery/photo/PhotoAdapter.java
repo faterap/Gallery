@@ -33,9 +33,13 @@ public class PhotoAdapter extends BaseAdapter<Photo> {
 
         vh.mPhotoName.setText(photo.getName());
         if (photo.exist()) {
-            vh.mPhotoThumbnail.setImageBitmap(photo.getBitmap());
+            // TODO: 13/12/18 set sample size to prevent OOM
+            if (photo.getBitmap() != null) {
+                vh.mPhotoThumbnail.setImageBitmap(photo.getBitmap());
+            } else {
+                vh.mPhotoThumbnail.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_placeholder));
+            }
         } else {
-            // TODO: 2018/12/10 default image
             vh.mPhotoThumbnail.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_placeholder));
         }
     }

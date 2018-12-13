@@ -11,30 +11,33 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import pig.stinky.com.gallery.BaseAdapter;
+import pig.stinky.com.gallery.PermissionActivity;
 import pig.stinky.com.gallery.R;
 import pig.stinky.com.gallery.album.AlbumActivity;
 import pig.stinky.com.gallery.bean.Album;
 import pig.stinky.com.gallery.bean.Photo;
 import pig.stinky.com.gallery.db.AlbumDao;
 import pig.stinky.com.gallery.db.PhotoDao;
+import pig.stinky.com.gallery.detail.PhotoDetailActivity;
 import pig.stinky.com.gallery.task.LoadTask;
 import pig.stinky.com.gallery.utils.DialogHelper;
+import pig.stinky.com.gallery.utils.UriUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoActivity extends PermissionActivity {
 
     public static final String EXTRA_OPEN_PHOTO = "open_photo";
     public static final String EXTRA_OPEN_PHOTO_INDEX = "open_photo_index";
@@ -54,10 +57,10 @@ public class PhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        mAlbum = (Album) getIntent().getSerializableExtra(AlbumActivity.EXTRA_OPEN_ALBUM);
+        mAlbum = getIntent().getParcelableExtra(AlbumActivity.EXTRA_OPEN_ALBUM);
 
         mRecyclerView = findViewById(R.id.recycler_view);
-        GridLayoutManager manager = new GridLayoutManager(this, 5);
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(manager);
         mAdapter = new PhotoAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -91,9 +94,10 @@ public class PhotoActivity extends AppCompatActivity {
         if (requestCode == ADD_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
             mSelected = Matisse.obtainResult(data);
 
+            // convert media uri to file path
             if (mSelected != null && !mSelected.isEmpty()) {
                 Uri uri = mSelected.get(0);
-                String path = uri.getPath();
+                String path = UriUtils.getImagePathFromMediaUri(this, uri);
 
                 if (path != null) {
                     File image = new File(path);
@@ -118,7 +122,6 @@ public class PhotoActivity extends AppCompatActivity {
                         .countable(true)
                         // 1 photo selected each time
                         .maxSelectable(1)
-//                        .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                         .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
                         .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                         .thumbnailScale(0.85f)
@@ -141,18 +144,22 @@ public class PhotoActivity extends AppCompatActivity {
             case R.id.rename_album:
                 View root = View.inflate(this, R.layout.dialog_rename, null);
                 final EditText et = root.findViewById(R.id.rename);
+
                 if (et != null) {
-                    et.selectAll();
                     et.setText(mAlbum.getAlbumName());
+                    et.selectAll();
+                    et.requestFocus();
                 }
 
                 AlertDialog renameDialog = DialogHelper.buildCustomViewDialog(this, "Rename Album", root, (dialog, which) -> {
-                    // TODO: 2018/12/10 do it in thread
                     if (et != null) {
-                        AlbumDao.renameAlbum(mAlbum, et.getText().toString().trim());
+                        if (et.getText().toString().trim().equals(mAlbum.getAlbumName())) {
+                            Toast.makeText(this, "Album name cannot be the same!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // TODO: 2018/12/10 do it in worker thread
+                            AlbumDao.renameAlbum(mAlbum, et.getText().toString().trim());
+                        }
                     }
-
-                    refreshPhotos();
                 });
                 renameDialog.show();
                 return true;
@@ -177,10 +184,12 @@ public class PhotoActivity extends AppCompatActivity {
 
         @Override
         protected void itemClick(List<Photo> data, int position) {
-            Intent intent = new Intent(mContext.get(), PhotoActivity.class);
-            intent.putParcelableArrayListExtra(EXTRA_OPEN_PHOTO, (ArrayList<? extends Parcelable>) data);
-            intent.putExtra(EXTRA_OPEN_PHOTO_INDEX, position);
-            mContext.get().startActivity(intent);
+            if (mContext.get() != null) {
+                Intent intent = new Intent(mContext.get(), PhotoDetailActivity.class);
+                intent.putParcelableArrayListExtra(EXTRA_OPEN_PHOTO, (ArrayList<? extends Parcelable>) data);
+                intent.putExtra(EXTRA_OPEN_PHOTO_INDEX, position);
+                mContext.get().startActivity(intent);
+            }
         }
     }
 }

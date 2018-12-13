@@ -1,12 +1,12 @@
 package pig.stinky.com.gallery.basic;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import pig.stinky.com.gallery.PermissionActivity;
 import pig.stinky.com.gallery.R;
 
-public abstract class RVActivity extends AppCompatActivity {
+public abstract class RVActivity extends PermissionActivity {
 
     protected RecyclerView mRecyclerView;
 

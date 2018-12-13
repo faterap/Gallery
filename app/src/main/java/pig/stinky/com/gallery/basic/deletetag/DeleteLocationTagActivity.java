@@ -19,7 +19,7 @@ public class DeleteLocationTagActivity extends RVActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPhoto = (Photo) getIntent().getSerializableExtra(EXTRA_DELETE_LOCATION_TAG_PHOTO);
+        mPhoto = getIntent().getParcelableExtra(EXTRA_DELETE_LOCATION_TAG_PHOTO);
 
         mAdapter = new DeleteLocationTagAdapter(this);
         mAdapter.setOnPhotoDeleteListener(tag -> {

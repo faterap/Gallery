@@ -23,8 +23,10 @@ public class AlbumTask extends LoadTask<Album> {
 
     @Override
     protected void itemClick(List<Album> data, int position) {
-        Intent intent = new Intent(mContext.get(), PhotoActivity.class);
-        intent.putExtra(AlbumActivity.EXTRA_OPEN_ALBUM, data.get(position));
-        mContext.get().startActivity(intent);
+        if (mContext.get() != null) {
+            Intent intent = new Intent(mContext.get(), PhotoActivity.class);
+            intent.putExtra(AlbumActivity.EXTRA_OPEN_ALBUM, data.get(position));
+            mContext.get().startActivity(intent);
+        }
     }
 }

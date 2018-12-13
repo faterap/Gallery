@@ -60,7 +60,7 @@ public class AlbumActivity extends RVActivity {
 
                 AlertDialog dialog = DialogHelper.buildCustomViewDialog(this, "Create Album", root, (dialog1, which) -> {
                     // TODO: 2018/12/10 do it in thread
-                    AlbumDao.createAlbum(new Album(et.getText().toString().trim()));
+                    AlbumDao.addAlbum(new Album(et.getText().toString().trim()));
 
                     refreshAlbum();
                 });

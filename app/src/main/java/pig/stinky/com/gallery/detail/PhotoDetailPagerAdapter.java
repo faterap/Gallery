@@ -51,9 +51,10 @@ public class PhotoDetailPagerAdapter extends PagerAdapter {
         RecyclerView personRv = root.findViewById(R.id.rv_person_tags);
         RecyclerView locationRv = root.findViewById(R.id.rv_location_tags);
 
-        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
-        personRv.setLayoutManager(manager);
-        locationRv.setLayoutManager(manager);
+        GridLayoutManager personManager = new GridLayoutManager(mContext, 3);
+        GridLayoutManager locationManager = new GridLayoutManager(mContext, 3);
+        personRv.setLayoutManager(personManager);
+        locationRv.setLayoutManager(locationManager);
 
         PersonTagAdapter personAdapter = new PersonTagAdapter(mContext);
         LocationTagAdapter locationAdapter = new LocationTagAdapter(mContext);
@@ -67,9 +68,6 @@ public class PhotoDetailPagerAdapter extends PagerAdapter {
         LocationTagTask locationTagTask = new LocationTagTask(new WeakReference<>(mContext), locationAdapter, photo);
         personTagTask.execute();
         locationTagTask.execute();
-
-//        personAdapter.setData(photo.getPersonTags());
-//        locationAdapter.setData(photo.getLocationTags());
 
         container.addView(root);
 

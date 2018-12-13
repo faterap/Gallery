@@ -2,8 +2,6 @@ package pig.stinky.com.gallery.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
-import androidx.appcompat.app.AppCompatActivity;
 import pig.stinky.com.gallery.BaseAdapter;
 
 import java.lang.ref.WeakReference;
