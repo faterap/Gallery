@@ -31,6 +31,7 @@ import static pig.stinky.com.gallery.photo.PhotoActivity.EXTRA_OPEN_PHOTO_INDEX;
 public class PhotoDetailActivity extends PermissionActivity {
 
     private ViewPager mPager;
+    private PhotoDetailPagerAdapter mAdapter;
 
     private int mCurrentIndex;
     private ArrayList<Photo> mPhotos;
@@ -44,8 +45,8 @@ public class PhotoDetailActivity extends PermissionActivity {
         mCurrentIndex = getIntent().getIntExtra(EXTRA_OPEN_PHOTO_INDEX, -1);
 
         mPager = findViewById(R.id.pager);
-        PhotoDetailPagerAdapter pagerAdapter = new PhotoDetailPagerAdapter(this, mPhotos);
-        mPager.setAdapter(pagerAdapter);
+        mAdapter = new PhotoDetailPagerAdapter(this, mPhotos);
+        mPager.setAdapter(mAdapter);
         mPager.setCurrentItem(mCurrentIndex);
     }
 
@@ -60,10 +61,11 @@ public class PhotoDetailActivity extends PermissionActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         View root = View.inflate(this, R.layout.dialog_create, null);
         final EditText et = root.findViewById(R.id.create);
+
         AlertDialog dialog = null;
         Intent intent = null;
 
-        Photo photo = mPhotos.get(mCurrentIndex);
+        Photo photo = mPhotos.get(mPager.getCurrentItem());
 
         switch (item.getItemId()) {
             case R.id.delete_photo:
@@ -81,11 +83,19 @@ public class PhotoDetailActivity extends PermissionActivity {
                 startActivityForResult(intent, MovePhotoActivity.MOVE_PHOTO_REQUEST_CODE);
                 return true;
             case R.id.add_person_tag:
-                dialog = DialogHelper.buildCustomViewDialog(this, "Add person tag", root, (dialog1, which) -> PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo.getFullPath())));
+                dialog = DialogHelper.buildCustomViewDialog(this, "Add person tag", root,
+                        (dialog1, which) -> {
+                            PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo.getFullPath()));
+                            mAdapter.notifyDataSetChanged();
+                        });
                 dialog.show();
                 return true;
             case R.id.add_location_tag:
-                dialog = DialogHelper.buildCustomViewDialog(this, "Add location tag", root, (dialog1, which) -> LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo.getFullPath())));
+                dialog = DialogHelper.buildCustomViewDialog(this, "Add location tag", root,
+                        (dialog1, which) -> {
+                            LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo.getFullPath()));
+                            mAdapter.notifyDataSetChanged();
+                        });
                 dialog.show();
                 return true;
             case R.id.delete_person_tag:
@@ -101,6 +111,12 @@ public class PhotoDetailActivity extends PermissionActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

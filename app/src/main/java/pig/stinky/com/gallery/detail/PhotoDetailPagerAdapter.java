@@ -80,6 +80,12 @@ public class PhotoDetailPagerAdapter extends PagerAdapter {
     }
 
     @Override
+    public int getItemPosition(@NonNull Object object) {
+        // TODO: 13/12/18 refresh all items at the same time, which is a heavy work
+        return POSITION_NONE;
+    }
+
+    @Override
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.setPrimaryItem(container, position, object);
     }
