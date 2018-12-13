@@ -2,6 +2,7 @@ package pig.stinky.com.gallery.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -70,13 +71,31 @@ public class Photo implements Parcelable {
         return mImage.getAbsolutePath();
     }
 
-    public Bitmap getBitmap() {
+    public Bitmap getOriginBitmap() {
         if (!exist()) {
             return null;
         }
 
-        // TODO: 13/12/18 set sample size
-        return BitmapFactory.decodeFile(mImage.getAbsolutePath());
+        // TODO: 2018/12/14 potential OOM
+        return BitmapFactory.decodeFile(getFullPath());
+    }
+
+    public Bitmap getScaledBitmap() {
+        if (!exist()) {
+            return null;
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        return BitmapFactory.decodeFile(getFullPath(), options);
+    }
+
+    public Bitmap getThumbnail() {
+        if (!exist()) {
+            return null;
+        }
+
+        return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImage.getAbsolutePath()), 50, 50);
     }
 
     public String getAlbumName() {

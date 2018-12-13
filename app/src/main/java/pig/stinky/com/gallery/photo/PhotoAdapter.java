@@ -1,6 +1,7 @@
 package pig.stinky.com.gallery.photo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +34,9 @@ public class PhotoAdapter extends BaseAdapter<Photo> {
 
         vh.mPhotoName.setText(photo.getName());
         if (photo.exist()) {
-            // TODO: 13/12/18 set sample size to prevent OOM
-            if (photo.getBitmap() != null) {
-                vh.mPhotoThumbnail.setImageBitmap(photo.getBitmap());
+            Bitmap thumbnail = photo.getThumbnail();
+            if (thumbnail != null) {
+                vh.mPhotoThumbnail.setImageBitmap(thumbnail);
             } else {
                 vh.mPhotoThumbnail.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_placeholder));
             }

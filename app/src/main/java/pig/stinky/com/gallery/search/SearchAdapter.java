@@ -30,7 +30,7 @@ public class SearchAdapter extends BaseAdapter<Photo> {
         super.onBindViewHolder(holder, position);
         SearchViewHolder vh = (SearchViewHolder) holder;
 
-        vh.mThumbnail.setImageBitmap(mData.get(position).getBitmap());
+        vh.mThumbnail.setImageBitmap(mData.get(position).getThumbnail());
         vh.mPhotoName.setText(mData.get(position).getName());
     }
 

@@ -1,7 +1,6 @@
 package pig.stinky.com.gallery.detail;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,7 @@ public class PhotoDetailPagerAdapter extends PagerAdapter {
         personRv.setAdapter(personAdapter);
         locationRv.setAdapter(locationAdapter);
 
-        iv.setImageBitmap(BitmapFactory.decodeFile(photo.getFullPath()));
+        iv.setImageBitmap(photo.getOriginBitmap());
 
         // load tag in AsyncTask
         PersonTagTask personTagTask = new PersonTagTask(new WeakReference<>(mContext), personAdapter, photo);
