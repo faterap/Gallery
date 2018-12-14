@@ -85,7 +85,7 @@ public class PhotoDetailActivity extends PermissionActivity {
             case R.id.add_person_tag:
                 dialog = DialogHelper.buildCustomViewDialog(this, "Add person tag", root,
                         (dialog1, which) -> {
-                            PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo.getFullPath()));
+                            PersonTagDao.addTag(new PersonTag(et.getText().toString().trim(), photo));
                             mAdapter.notifyDataSetChanged();
                         });
                 dialog.show();
@@ -93,7 +93,7 @@ public class PhotoDetailActivity extends PermissionActivity {
             case R.id.add_location_tag:
                 dialog = DialogHelper.buildCustomViewDialog(this, "Add location tag", root,
                         (dialog1, which) -> {
-                            LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo.getFullPath()));
+                            LocationTagDao.addTag(new LocationTag(et.getText().toString().trim(), photo));
                             mAdapter.notifyDataSetChanged();
                         });
                 dialog.show();

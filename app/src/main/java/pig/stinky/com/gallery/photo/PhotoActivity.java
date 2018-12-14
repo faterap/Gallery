@@ -154,10 +154,11 @@ public class PhotoActivity extends PermissionActivity {
                 AlertDialog renameDialog = DialogHelper.buildCustomViewDialog(this, "Rename Album", root, (dialog, which) -> {
                     if (et != null) {
                         if (et.getText().toString().trim().equals(mAlbum.getAlbumName())) {
-                            Toast.makeText(this, "Album name cannot be the same!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Rename failed. Album name cannot be the same!", Toast.LENGTH_SHORT).show();
                         } else {
                             // TODO: 2018/12/10 do it in worker thread
                             AlbumDao.renameAlbum(mAlbum, et.getText().toString().trim());
+                            finish();
                         }
                     }
                 });

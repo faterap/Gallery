@@ -49,13 +49,13 @@ public class Photo implements Parcelable {
 
     public void setPersonTag(List<PersonTag> personTags) {
         for (PersonTag tag : personTags) {
-            tag.setPhotoPath(getFullPath());
+            tag.setPhoto(this);
         }
     }
 
     public void setLocationTags(List<LocationTag> locationTags) {
         for (LocationTag tag : locationTags) {
-            tag.setPhotoPath(getFullPath());
+            tag.setPhoto(this);
         }
     }
 

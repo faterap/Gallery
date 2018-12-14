@@ -6,20 +6,17 @@ import android.database.sqlite.SQLiteException;
 import pig.stinky.com.gallery.bean.PersonTag;
 import pig.stinky.com.gallery.bean.Photo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class PersonTagDao {
 
-
-
-
-
-
     public static final int INDEX_TAG_PHOTO_PATH = 0;
     public static final int INDEX_TAG_NAME = 1;
-    //public static final int Index_TAG_ALBUM = 2；
+    public static final int INDEX_TAG_ALBUM = 2;
+
     private PersonTagDao() {
 
     }
@@ -47,39 +44,24 @@ public class PersonTagDao {
     }
 
     public static void addTag(PersonTag tag) {
-        String sql = "INSERT INTO `persontag` (`photoid`,`value`)  VALUES ('"
-                + tag.getPhotoPath()
-                + "','"
-                + tag.getValue()
-                + "')";
-         /*
-         String sql = "INSERT INTO `persontag` (`photoid`,`value`,`albumsource`)  VALUES ('"
+        String sql = "INSERT INTO `persontag` (`photoname`,`value`,`albumsource`)  VALUES ('"
                 + tag.getPhoto().getFullPath()
                 + "','"
                 + tag.getValue()
                 + "','"
                 + tag.getPhoto().getAlbumName()
                 + "')";
-         */
         runRawSql(Collections.singletonList(sql));
     }
 
     public static void deleteTag(PersonTag tag) {
-        String sql = "DELETE FROM `persontag` WHERE `photoid` ='"
-                + tag.getPhotoPath()
-                + "' and `value` = '"
-                + tag.getValue()
-                + "'";
-        /*
-        String sql = "DELETE FROM `persontag` WHERE `photoid` ='"
+        String sql = "DELETE FROM `persontag` WHERE `photoname` ='"
                 + tag.getPhoto().getFullPath()
                 + "' and `value` = '"
                 + tag.getValue()
                 + "' and `albumsource` = '"
                 + tag.getPhoto().getAlbumName()
                 + "'";
-
-         */
         runRawSql(Collections.singletonList(sql));
     }
 
@@ -93,14 +75,13 @@ public class PersonTagDao {
             db = DatabaseManager.getInstance().openDatabase();
             db.beginTransaction();
 
-            String sql = "SELECT * FROM `persontag` WHERE `photoid` = '"
+            String sql = "SELECT * FROM `persontag` WHERE `photoname` = '"
                     + photo.getFullPath()
                     + "'";
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
-                //PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
+                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(new File(cursor.getString(INDEX_TAG_PHOTO_PATH)), cursor.getString(INDEX_TAG_ALBUM)));
                 ret.add(tag);
             }
 
@@ -135,8 +116,7 @@ public class PersonTagDao {
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
-                //PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
+                PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(new File(cursor.getString(INDEX_TAG_PHOTO_PATH)), cursor.getString(INDEX_TAG_ALBUM)));
                 ret.add(tag);
             }
 

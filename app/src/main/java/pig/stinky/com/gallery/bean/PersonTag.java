@@ -5,22 +5,22 @@ public class PersonTag {
     private String mValue;
 
     // TODO: 10/12/18 1 image --- 1 path?
-    private String mPhotoPath;
+    private Photo mPhoto;
 
-    public PersonTag(String value, String path) {
+    public PersonTag(String value, Photo photo) {
         mValue = value;
-        mPhotoPath = path;
+        mPhoto = photo;
     }
 
     public String getValue() {
         return mValue;
     }
 
-    public String getPhotoPath() {
-        return mPhotoPath;
+    public Photo getPhoto() {
+        return mPhoto;
     }
 
-    public void setPhotoPath(String path) {
-        this.mPhotoPath = path;
+    public void setPhoto(Photo photo) {
+        mPhoto = photo;
     }
 }

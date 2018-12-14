@@ -11,8 +11,6 @@ import java.util.List;
 
 public class AlbumDao {
 
-
-
     public static final int INDEX_ALBUM_NAME = 0;
 
     private static void runRawSql(List<String> sqls) {
@@ -45,33 +43,43 @@ public class AlbumDao {
     }
 
     public static void deleteAlbum(Album album) {
-        String sql = "DELETE FROM `album` WHERE (`albumname`) ='"
+        String deletePersonTagSql = "DELETE FROM `persontag` WHERE `albumsource` ='"
+                + album.getAlbumName()
+                + "'";
+
+        String deleteLocationTagSql = "DELETE FROM `locationtag` WHERE `albumorigin` ='"
+                + album.getAlbumName()
+                + "'";
+
+        String deletePhotoSql = "DELETE FROM `photo` WHERE (`albumid`) ='"
                 + album.getAlbumName() + "'";
-        /*
-        String sql = "DELETE FROM `photo` WHERE (`albumid`) ='"
-            + album.getAlbumName() + "';"
-            + "DELETE FROM `album` WHERE (`albumname`) ='"
-            + album.getAlbumName() + "'";
-            */
-        runRawSql(Collections.singletonList(sql));
+
+        String deleteAlbumSql = "DELETE FROM `album` WHERE (`albumname`) ='"
+                + album.getAlbumName() + "'";
+
+        List<String> sqls = new ArrayList<>();
+        sqls.add(deletePersonTagSql);
+        sqls.add(deleteLocationTagSql);
+        sqls.add(deletePhotoSql);
+        sqls.add(deleteAlbumSql);
+
+        runRawSql(sqls);
     }
 
     public static void renameAlbum(Album album, String name) {
-        String sql = "UPDATE `album` SET `albumname` = '"
+        String updatePhotoSql = "UPDATE `photo` SET `albumid` = '"
+                + name + "' WHERE `albumid` = '"
+                + album.getAlbumName() + "'";
+
+        String updateAlbumSql = "UPDATE `album` SET `albumname` = '"
                 + name + "' WHERE `albumname` = '"
                 + album.getAlbumName() + "'";
-        /*
 
-        String sql = "UPDATE `photo` SET `albumid` = '"
-            + name + "' WHERE `albumid` = '"
-            + album.getAlbumName() + "';"
-            + "UPDATE `album` SET `albumname` = '"
-            + name + "' WHERE `albumname` = '"
-            + album.getAlbumName() + "'";
-    */
+        List<String> sqls = new ArrayList<>();
+        sqls.add(updatePhotoSql);
+        sqls.add(updateAlbumSql);
 
-
-        runRawSql(Collections.singletonList(sql));
+        runRawSql(sqls);
     }
 
     public static List<Album> loadAlbum() {

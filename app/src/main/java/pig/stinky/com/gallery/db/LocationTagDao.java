@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteException;
 import pig.stinky.com.gallery.bean.LocationTag;
 import pig.stinky.com.gallery.bean.Photo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +15,7 @@ public class LocationTagDao {
 
     public static final int INDEX_TAG_PHOTO_PATH = 0;
     public static final int INDEX_TAG_NAME = 1;
-    //public static final int Index_TAG_ALBUM = 2；
+    public static final int INDEX_TAG_ALBUM = 2;
 
     private LocationTagDao() {
 
@@ -43,30 +44,18 @@ public class LocationTagDao {
     }
 
     public static void addTag(LocationTag tag) {
-        String sql = "INSERT INTO `locationtag` (`photoname`,`value`) VALUES ('"
-                + tag.getPhotoPath()
-                + "','"
-                + tag.getValue()
-                + "')";
-        /*
-         String sql = "INSERT INTO `locationtag` (`photoname`,`value`,`albumorigin`)  VALUES ('"
+        String sql = "INSERT INTO `locationtag` (`photoname`,`value`,`albumorigin`)  VALUES ('"
                 + tag.getPhoto().getFullPath()
                 + "','"
                 + tag.getValue()
                 + "','"
                 + tag.getPhoto().getAlbumName()
                 + "')";
-         */
+
         runRawSql(Collections.singletonList(sql));
     }
 
     public static void deleteTag(LocationTag tag) {
-        String sql = "DELETE FROM `locationtag` WHERE `photoname` ='"
-                + tag.getPhotoPath()
-                + "' and `value` = '"
-                + tag.getValue()
-                + "'";
-        /*
         String sql = "DELETE FROM `locationtag` WHERE `photoname` ='"
                 + tag.getPhoto().getFullPath()
                 + "' and `value` = '"
@@ -74,8 +63,6 @@ public class LocationTagDao {
                 + "' and `albumorigin` = '"
                 + tag.getPhoto().getAlbumName()
                 + "'";
-
-         */
         runRawSql(Collections.singletonList(sql));
     }
 
@@ -94,8 +81,7 @@ public class LocationTagDao {
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
-                //LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
+                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), new Photo(new File(cursor.getString(INDEX_TAG_PHOTO_PATH)), cursor.getString(INDEX_TAG_ALBUM)));
                 ret.add(tag);
             }
 
@@ -129,8 +115,7 @@ public class LocationTagDao {
             cursor = db.rawQuery(sql, null);
 
             while (cursor.moveToNext()) {
-                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
-                //LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
+                LocationTag tag = new LocationTag(cursor.getString(INDEX_TAG_NAME), new Photo(new File(cursor.getString(INDEX_TAG_PHOTO_PATH)), cursor.getString(INDEX_TAG_ALBUM)));
                 ret.add(tag);
             }
 

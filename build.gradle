@@ -7,13 +7,6 @@ buildscript {
         jcenter()
     }
 
-//    repositories {
-//        maven {
-//            url 'http://source.tp-link.net:8081/nexus/content/groups/public/'
-//        }
-//        jcenter()
-//    }
-
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -28,13 +21,6 @@ allprojects {
         google()
         jcenter()
     }
-
-//    repositories {
-//        maven {
-//            url 'http://source.tp-link.net:8081/nexus/content/groups/public/'
-//        }
-//        jcenter()
-//    }
 }
 
 task clean(type: Delete) {
