@@ -12,9 +12,14 @@ import java.util.List;
 
 public class PersonTagDao {
 
+
+
+
+
+
     public static final int INDEX_TAG_PHOTO_PATH = 0;
     public static final int INDEX_TAG_NAME = 1;
-
+    //public static final int Index_TAG_ALBUM = 2；
     private PersonTagDao() {
 
     }
@@ -47,6 +52,15 @@ public class PersonTagDao {
                 + "','"
                 + tag.getValue()
                 + "')";
+         /*
+         String sql = "INSERT INTO `persontag` (`photoid`,`value`,`albumsource`)  VALUES ('"
+                + tag.getPhoto().getFullPath()
+                + "','"
+                + tag.getValue()
+                + "','"
+                + tag.getPhoto().getAlbumName()
+                + "')";
+         */
         runRawSql(Collections.singletonList(sql));
     }
 
@@ -56,6 +70,16 @@ public class PersonTagDao {
                 + "' and `value` = '"
                 + tag.getValue()
                 + "'";
+        /*
+        String sql = "DELETE FROM `persontag` WHERE `photoid` ='"
+                + tag.getPhoto().getFullPath()
+                + "' and `value` = '"
+                + tag.getValue()
+                + "' and `albumsource` = '"
+                + tag.getPhoto().getAlbumName()
+                + "'";
+
+         */
         runRawSql(Collections.singletonList(sql));
     }
 
@@ -76,6 +100,7 @@ public class PersonTagDao {
 
             while (cursor.moveToNext()) {
                 PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
+                //PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
                 ret.add(tag);
             }
 
@@ -111,6 +136,7 @@ public class PersonTagDao {
 
             while (cursor.moveToNext()) {
                 PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), cursor.getString(INDEX_TAG_PHOTO_PATH));
+                //PersonTag tag = new PersonTag(cursor.getString(INDEX_TAG_NAME), new Photo(cursor.getString(INDEX_TAG_PHOTO_PATH, cursor.gerString(Index_TAG_ALBUM))));
                 ret.add(tag);
             }
 

@@ -16,6 +16,9 @@ import java.util.List;
 
 public class PhotoDao {
 
+
+
+
     public static final int INDEX_IMAGE_PATH = 1;
     public static final int INDEX_ALBUM_NAME = 0;
 
@@ -141,6 +144,23 @@ public class PhotoDao {
                 + "' and `filepath` = '"
                 + photo.getFullPath()
                 + "'";
+        /*
+        String sql = "DELETE FROM `persontag` WHERE `albumsource` ='"
+            + photo.getAlbumName()
+            + "' and `photoid` = '"
+            + photo.getFullPath()
+            + "';"
+            + "DELETE FROM `locationtag` WHERE `albumorigin` ='"
+            + photo.getAlbumName()
+            + "' and `photoid` = '"
+            + photo.getFullPath()
+            + "';"
+            + "DELETE FROM `photo` WHERE `albumid` ='"
+            + photo.getAlbumName()
+            + "' and `filepath` = '"
+            + photo.getFullPath()
+            + "'";
+    */
         runRawSql(Collections.singletonList(sql));
     }
 
@@ -265,6 +285,7 @@ public class PhotoDao {
 
     private static void setPhotoTag(SQLiteDatabase db, Photo photo) {
         String photoPath = photo.getFullPath();
+        //String albumName = photo.getAlbumName();
         Cursor personCursor = null;
         Cursor locationCursor = null;
 
@@ -272,6 +293,13 @@ public class PhotoDao {
             String personTagSql = "SELECT `value` FROM `persontag` WHERE `photoid` = '"
                     + photoPath
                     + "'";
+            /*
+            String personTagSql = "SELECT `value` FROM `persontag` WHERE `photoid` = '"
+                    + photoPath
+                    + "' and `albumsource` = '"
+                    + albumName
+                    + "'";
+             */
 
             personCursor = db.rawQuery(personTagSql, null);
 
@@ -285,6 +313,13 @@ public class PhotoDao {
             String locationTagSql = "SELECT `value` FROM `locationtag` WHERE `photoname` = '"
                     + photoPath
                     + "'";
+            /*
+            String locationTagSql = "SELECT `value` FROM `locationtag` WHERE `photoname` = '"
+                    + photoPath
+                    + "' and `albumorigin` = '"
+                    + albumName
+                    + "'";
+             */
 
             locationCursor = db.rawQuery(locationTagSql, null);
 

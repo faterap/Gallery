@@ -6,6 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class GalleryDatabase extends SQLiteOpenHelper {
 
+
+
+
+
+
+
     // Database info
     public static final String DB_NAME = "photos";
     public static final int DB_VERSION = 2;
@@ -38,6 +44,15 @@ public class GalleryDatabase extends SQLiteOpenHelper {
 //                "  KEY `photoid` (`photoid`)," +
                 "  CONSTRAINT `photo_id_1` FOREIGN KEY (`photoid`) REFERENCES `photo` (`filepath`) ON DELETE CASCADE ON UPDATE CASCADE" +
                 ")";
+        /*
+        String createPersonTagSql = "CREATE TABLE `persontag` (" +
+            "  `photoid` varchar(200) NOT NULL," +
+            "  `value` varchar(45) NOT NULL," +
+            "  `albumsource` varchar(45) NOT NULL," +
+            "  PRIMARY KEY (`photoid`,`value`)," +
+            "  CONSTRAINT `photo_id_1` FOREIGN KEY (`photoid`) REFERENCES `photo` (`filepath`) ON DELETE CASCADE ON UPDATE CASCADE" +
+            ")";
+            */
         sqLiteDatabase.execSQL(createPersonTagSql);
 
         String createLocationTagSql = "CREATE TABLE `locationtag` (" +
@@ -46,6 +61,16 @@ public class GalleryDatabase extends SQLiteOpenHelper {
                 "  PRIMARY KEY (`photoname`,`value`)," +
                 "  CONSTRAINT `photoname_1` FOREIGN KEY (`photoname`) REFERENCES `photo` (`filepath`) ON DELETE CASCADE ON UPDATE CASCADE" +
                 ")";
+        /*
+
+         String createLocationTagSql = "CREATE TABLE `locationtag` (" +
+            "  `photoname` varchar(45) NOT NULL," +
+            "  `value` varchar(45) NOT NULL," +
+            "  `albumorigin` varchar(45) NOT NULL," +
+            "  PRIMARY KEY (`photoname`,`value`)," +
+            "  CONSTRAINT `photoname_1` FOREIGN KEY (`photoname`) REFERENCES `photo` (`filepath`) ON DELETE CASCADE ON UPDATE CASCADE" +
+            ")";
+     */
         sqLiteDatabase.execSQL(createLocationTagSql);
     }
 
